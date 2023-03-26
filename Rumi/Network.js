@@ -1,47 +1,37 @@
 function solution(n, computers) {
-  var answer = n // n개는 각각 네트워크로 시작
+  let answer = 0
 
-  const con = []
-  const arr = []
+  const visited = Array(n).fill(false)
 
-  // bfs
-  for (let i = 0; i < n; i++) {
-    for (let j = 0; j < n; j++) {
-      let currentCon = computers[i][j]
-      console.log('i', i, 'j', j, 'curr', currentCon)
-      // 현재쪽이 다른 컴퓨터하고 연결되었을 때
-      if (i != j && currentCon === 1) {
-        let otherCon = computers[j][i]
-        // 양방향 연결
-        // 다른쪽에서도 지금 컴퓨터를 연결했을 때
-
-        if (!arr.includes(i)) {
-          arr.push(i)
-          console.log('넣는다 i', i)
-        }
-        if (!arr.includes(j)) {
-          arr.push(j)
-          console.log('넣는다 j', j)
-        }
+  function dfs(curr) {
+    // 네트워크 그룹에 해당 컴퓨터가 포함되는지
+    for (let i in curr) {
+      // 컴퓨터 연결 확인 & 연결된 적 없을 때
+      if (curr[i] && !visited[i]) {
+        // 그룹에 포함됐다고 체크
+        visited[i] = 1
+        // 그룹에 이어서 포함되는지 체크
+        dfs(computers[i])
       }
     }
   }
 
-  console.log(arr)
-  if (arr.length) {
-    answer = n - arr.length + 1
+  for (let i in computers) {
+    // 네트워크 그룹을 체크하는 부분
+    if (!visited[i]) {
+      visited[i] = true
+      answer++
+      dfs(computers[i])
+    }
   }
 
   return answer
 }
 
 console.log(
-  solution(4, [
-    [1, 1, 0, 0],
-    [0, 1, 0, 0],
-    [0, 0, 1, 1],
-    [0, 0, 0, 1],
+  solution(3, [
+    [1, 1, 0],
+    [1, 1, 0],
+    [0, 0, 1],
   ])
 )
-
-// 1-2-3-4
